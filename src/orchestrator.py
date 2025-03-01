@@ -1,6 +1,7 @@
 from agents.planner import Planner
 from agents.developer import Developer
 from agents.reviewer import Reviewer
+from agents.presenter import Presenter
 from agents.data_collector import DataCollector
 
 
@@ -9,13 +10,15 @@ class Orchestrator:
         self.planner = Planner()
         self.data_collector = DataCollector()
         self.developer = Developer()
+        self.presenter = Presenter()
         self.reviewer = Reviewer()
 
     def orchestrate(self, input_data):
         plan = str(self.planner.execute(input_data))
         data = str(self.data_collector.execute(plan))
         data_analysis = str(self.developer.execute(data))
-        review_result = str(self.reviewer.execute(data_analysis))
+        presentation = str(self.presenter.execute(data_analysis))
+        review_result = str(self.reviewer.execute(presentation))
 
         iteration = 0
 
@@ -29,7 +32,8 @@ class Orchestrator:
                 plan = str(self.planner.execute(input_data))
                 data = str(self.data_collector.execute(plan))
                 data_analysis = str(self.developer.execute(data))
-                review_result = str(self.reviewer.execute(data_analysis))
+                presentation = str(self.presenter.execute(data_analysis))
+                review_result = str(self.reviewer.execute(presentation))
             iteration += 1
 
         print("Max iterations reached, returning best attempt")
