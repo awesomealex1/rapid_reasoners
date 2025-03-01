@@ -1,6 +1,7 @@
-from base_agent import BaseAgent
+from agents.base_agent import BaseAgent
+from smolagents.agents import ToolCallingAgent
 
-class Planner(BaseAgent):
+class Planner(BaseAgent, ToolCallingAgent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -8,4 +9,5 @@ class Planner(BaseAgent):
     
     def execute(self, input, **kwargs):
         prompt = self.base_prompt + "\nThis here is the context you have been given: <CONTEXT>\n" + input + "<\CONTEXT>\nNow create a plan which other agents can execute upon."
-        self.run(prompt)
+        return self.run(prompt)
+

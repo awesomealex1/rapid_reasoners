@@ -5,7 +5,7 @@ import os
 class BaseAgent(MultiStepAgent):
 
     def __init__(self, **kwargs):
-        model = OpenAIServerModel("gpt-4o-mini", "https://api.openai.com/v1/chat/completions", os.getenv("OPENAI_KEY"))
+        model = OpenAIServerModel("gpt-4o-mini", "https://api.openai.com/v1", os.getenv("OPENAI_KEY"))
         super().__init__(tools=[], model=model, **kwargs)
 
     def execute(input, **kwargs):

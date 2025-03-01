@@ -1,8 +1,10 @@
-from orchestrator import Orchestrator
 import os
+import sys
+sys.path.append(os.curdir)
+from orchestrator import Orchestrator
 
 def main():
-    with os.open("prompt.txt", "r") as f:
+    with open("prompt.txt", "r") as f:
         prompt = f.readline()
     orchestrator = Orchestrator()
     result = orchestrator.orchestrate(input_data=prompt)
