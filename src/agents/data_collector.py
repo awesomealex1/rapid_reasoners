@@ -68,8 +68,9 @@ class DataCollector(BaseAgent, ToolCallingAgent):
         prompt = f"""
 {self.base_prompt}
 The context you have been given is:
----
+<CONTEXT>
 {context}
+<\CONTEXT>
 """
 
         # The ToolCallingAgent's `run` method will parse the prompt,
