@@ -15,4 +15,3 @@ class Developer(CodeAgent):
     def execute(self, input, **kwargs):
         prompt = self.base_prompt + "\nThis here is the context you have been given: <CONTEXT>\n" + input + "<\CONTEXT>\nNow create a solution."
         return self.run(prompt)
-    

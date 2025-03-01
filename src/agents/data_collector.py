@@ -4,6 +4,9 @@ from smolagents.default_tools import DuckDuckGoSearchTool
 from smolagents import tool
 import urllib
 import os
+from apify_client import ApifyClient
+import json
+
 
 @tool
 def download_tool(url: str, file_name: str) -> str:
@@ -35,6 +38,49 @@ def download_tool(url: str, file_name: str) -> str:
 
     return f"Downloaded and saved as {file_path}."  # Return the saved file path
 
+
+@tool
+def tiktok_trending_hashtags(days: str) -> str:
+    """
+    Fetches trending TikTok hashtags in the USA for the past X days using the Apify TikTok Trending Hashtags Scraper.
+
+    Args:
+        days: A string representing the number of days to look back (e.g., "7" for 7 days).
+    Returns:
+        A JSON string containing the trending hashtags dataset.
+    """
+    apify_token = os.getenv("APIFY_TOKEN")
+    if not apify_token:
+        raise ValueError("APIFY_TOKEN environment variable not set.")
+
+    # Initialize ApifyClient
+    client = ApifyClient(apify_token)
+    
+    # Prepare actor input
+    run_input = {
+        "countryCode": "US",
+        "maxItems": 100,
+        "period": days  # e.g., "7" for 7 days
+    }
+    
+    # Run the actor and wait for it to finish
+    run = client.actor("YHnqz388prKDbPGFx").call(run_input=run_input)
+    
+    # Fetch results from the dataset
+    dataset_items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+    
+    # Return as JSON string
+    save_path = os.path.join(os.curdir, "data")
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    data = json.dumps(dataset_items)
+    file_path = os.path.join(save_path, "tiktok.json")
+    
+    with open(file_path, "w") as f:  # Use 'wb' for binary data
+        f.write(data)
+    return f"Saved data in {file_path}"
+
+
 class DataCollector(BaseAgent, ToolCallingAgent):
     """
     The DataCollector agent takes a plan (prompt) from the Planner,
@@ -46,15 +92,16 @@ class DataCollector(BaseAgent, ToolCallingAgent):
     def __init__(self, **kwargs):
         # If you have real tool classes, add them to the list below
         # e.g. tools = [RedditSearchTool(), GoogleTrendsTool(), PublicDatasetSearchTool()]
-        tools = [DuckDuckGoSearchTool(), download_tool]
+        tools = [DuckDuckGoSearchTool(), download_tool, tiktok_trending_hashtags]
         super().__init__(**kwargs)
-        super(ToolCallingAgent, self).__init__(model=self.model, tools=tools, **kwargs)
+        super(ToolCallingAgent, self).__init__(model=self.model, tools=tools, max_steps=12, **kwargs)
 
         # This prompt frames the agent's role and behavior
         self.base_prompt = (
             "You are the Data Collector Agent. Your job is to:\n"
             "Download any files into the /data folder\n"
             "Use the internet to find data.\n"
+            "Also look up trending tiktok hashtags to find out about social media trends. Use the tool provided to do so."
         )
 
     def execute(self, context, **kwargs):
