@@ -59,7 +59,7 @@ def tiktok_trending_hashtags(days: str) -> str:
     # Prepare actor input
     run_input = {
         "countryCode": "US",
-        "maxItems": 100,
+        "maxItems": 40,
         "period": days  # e.g., "7" for 7 days
     }
     
@@ -92,16 +92,18 @@ class DataCollector(BaseAgent, ToolCallingAgent):
     def __init__(self, **kwargs):
         # If you have real tool classes, add them to the list below
         # e.g. tools = [RedditSearchTool(), GoogleTrendsTool(), PublicDatasetSearchTool()]
-        tools = [DuckDuckGoSearchTool(), download_tool, tiktok_trending_hashtags]
+        tools = [download_tool, tiktok_trending_hashtags]
         super().__init__(**kwargs)
         super(ToolCallingAgent, self).__init__(model=self.model, tools=tools, max_steps=12, **kwargs)
 
         # This prompt frames the agent's role and behavior
-        self.base_prompt = (
-            "You are the Data Collector Agent. Your job is to:\n"
-            "Download any files into the /data folder\n"
-            "Use the internet to find data.\n"
-            "Also look up trending tiktok hashtags to find out about social media trends. Use the tool provided to do so."
+        self.base_prompt = (f"""
+            "You are the Data Collector Agent. Your job is to:
+            Use the tools provided to find trending hashtags on TikTok.
+            Store these trending hashtags in the /data folder.
+            Download any files into the /data folder
+            Use the internet to find data.
+            """
         )
 
     def execute(self, context, **kwargs):
