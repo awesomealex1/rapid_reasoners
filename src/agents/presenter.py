@@ -1,6 +1,7 @@
 from agents.base_agent import BaseAgent
+from smolagents.agents import ToolCallingAgent
 
-class Presenter(BaseAgent):
+class Presenter(BaseAgent, ToolCallingAgent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
