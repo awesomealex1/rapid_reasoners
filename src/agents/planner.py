@@ -1,4 +1,4 @@
-from agents.base_agent import BaseAgent
+from src.agents.base_agent import BaseAgent
 from smolagents.agents import ToolCallingAgent
 
 class Planner(BaseAgent, ToolCallingAgent):
