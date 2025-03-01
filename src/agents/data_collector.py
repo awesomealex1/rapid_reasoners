@@ -1,10 +1,39 @@
 from agents.base_agent import BaseAgent
 from smolagents.agents import ToolCallingAgent
+from smolagents.default_tools import DuckDuckGoSearchTool
+from smolagents import tool
+import urllib
+import os
 
-# EXAMPLE tool placeholders (you need to define or import actual tools)
-# from tools.reddit_search import RedditSearchTool
-# from tools.google_trends import GoogleTrendsTool
-# from tools.public_dataset_search import PublicDatasetSearchTool
+@tool
+def download_tool(url: str, file_name: str) -> str:
+    """
+    This is a download tool.
+
+    Args:
+        url: url from which to download
+        file_name: the name of the file that you want to save
+    """
+    # Download the data from the URL
+    
+    user_agent = 'Mozilla/5.0'
+    headers = {'User-Agent': user_agent}
+    request = urllib.request.Request(url, None, headers)  # The assembled request
+    response = urllib.request.urlopen(request)
+    data = response.read()  # The data you need
+    
+    # Ensure the directory exists
+    save_path = os.path.join(os.curdir, "data")
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    
+    # Save the data to the file
+    file_path = os.path.join(save_path, file_name)
+    
+    with open(file_path, "wb") as f:  # Use 'wb' for binary data
+        f.write(data)
+
+    return f"Downloaded and saved as {file_path}."  # Return the saved file path
 
 class DataCollector(BaseAgent, ToolCallingAgent):
     """
@@ -17,26 +46,18 @@ class DataCollector(BaseAgent, ToolCallingAgent):
     def __init__(self, **kwargs):
         # If you have real tool classes, add them to the list below
         # e.g. tools = [RedditSearchTool(), GoogleTrendsTool(), PublicDatasetSearchTool()]
-        tools = []
-        super().__init__(tools=tools, **kwargs)
+        tools = [DuckDuckGoSearchTool(), download_tool]
+        super().__init__(**kwargs)
+        super(ToolCallingAgent, self).__init__(model=self.model, tools=tools, **kwargs)
 
         # This prompt frames the agent's role and behavior
         self.base_prompt = (
             "You are the Data Collector Agent. Your job is to:\n"
-            "1. Take an initial plan from the Planner Agent.\n"
-            "2. Perform a broad search for relevant data.\n"
-            "3. Refine and narrow down interesting data sources.\n"
-            "4. Return the final set of data sources you believe will help the Interpreter.\n\n"
-            "You have access to specialized tools to search:\n"
-            "- Reddit\n"
-            "- Google Trends\n"
-            "- Public Datasets\n"
-            "- (Any other data search tools available)\n\n"
-            "Be iterative: propose a broad search first, then refine based on results.\n"
-            "Reject or discard any irrelevant sources.\n"
+            "Download any files into the /data folder\n"
+            "Use the internet to find data.\n"
         )
 
-    def execute(self, plan_prompt, **kwargs):
+    def execute(self, context, **kwargs):
         """
         Iteratively collects data sources based on the plan from the Planner Agent.
         The final output should be a structured list or description of data sources.
@@ -46,18 +67,9 @@ class DataCollector(BaseAgent, ToolCallingAgent):
         # If you'd like multiple calls/steps, you can do that as well—this is a minimal example.
         prompt = f"""
 {self.base_prompt}
-The plan from the Planner Agent is:
+The context you have been given is:
 ---
-{plan_prompt}
----
-
-Steps to perform:
-1. Propose a broad search strategy using your available tools.
-2. Execute that broad search (via tool calls) to see what data might exist.
-3. Summarize findings and decide which data sources are most promising.
-4. Narrow the search (again using your tools) to get more detailed data.
-5. Finalize a list of relevant data sources to pass on to the Interpreter.
-6. Output them in a structured format (e.g., JSON, bullet points, etc.).
+{context}
 """
 
         # The ToolCallingAgent's `run` method will parse the prompt,
