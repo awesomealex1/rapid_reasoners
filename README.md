@@ -3,7 +3,7 @@
 This project, developed for a hackathon, leverages a multi-agent system to predict stock price movements based trends. Built using the [Hugging Face SmolAgents framework](https://huggingface.co/docs/smolagents/en/index), it analyzes social data (e.g., TikTok trends) from which it find consumer products and their related supply chains. Based on these supply chains it picks stocks to then invest in.
 
 ## Our inspiration: The Slime Example
-Since Q3 2023, the TikTok hashtag `#slime` has surged to 107M views and 16K posts, signaling a slime-making craze. Slime’s key ingredient, glue, ties directly to Newell Brands (producer of Elmer’s glue). Social chatter about glue sell-outs suggests unreported Q4 revenue growth, potentially boosting Newell Brands’ stock by the next earnings date. This project automates such trend identification and stock linkage.
+The TikTok hashtag `#slime` has surged to 107M views and 16K posts, signaling a slime-making craze. Slime’s key ingredient, glue, ties directly to Newell Brands (producer of Elmer’s glue). Social chatter about glue sell-outs suggests unreported Q4 revenue growth, potentially boosting Newell Brands’ stock by the next earnings date. This project automates such trend identification and stock linkage.
 
 ## SmolAgents Framework
 We use [SmolAgents](https://huggingface.co/docs/smolagents/en/index), a lightweight multi-agent framework from Hugging Face, to orchestrate our workflow. Each agent specializes in a task, passing data sequentially, with iteration driven by a review process.
