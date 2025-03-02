@@ -35,20 +35,19 @@ def download_tool(url: str, file_name: str) -> str:
 
     return f"Downloaded and saved as {file_path}."  # Return the saved file path
 
-class ProductDeveloper(CodeAgent):
+class SupplyChain(CodeAgent):
 
     def __init__(self, **kwargs):
         tools = [DuckDuckGoSearchTool(), download_tool]
         model = OpenAIServerModel("gpt-4o-mini", "https://api.openai.com/v1", os.getenv("OPENAI_KEY"))
-        super().__init__(tools=tools, model=model, additional_authorized_imports=["requests", "numpy", "pandas", "json", "csv", "os", "glob", "markdown"])
+        super().__init__(tools=tools, model=model, additional_authorized_imports=["requests", "numpy", "pandas", "json", "csv", "os", "glob", "markdown"], max_steps=12)
         data_location = os.path.join(os.curdir, "data")
-        consumer_data_folder = os.path.join(data_location, "consumer_data")
+        supply_chain = os.path.join(data_location, "supply_chain")
         consumer_products_folder = os.path.join(data_location, "consumer_products")
         self.base_prompt = f"""
-        You will take the data stored in {consumer_data_folder} and search the web to create a list of consumer products related to the data.
-        The product should be individual branded products, not a category of products, for instance, "Nike Air Max" is an example of a product, "Sports shoes" is an example of a category.
-        You will store this list of products in the {consumer_products_folder} folder. Make sure it is a well formatted list of consumer products. Also ensure to define the relationship between the
-        consumer products you find and the data in {consumer_data_folder} you used to find the consumer products.
+        You will take the data stored in {consumer_products_folder} and search the web to identify the supply chain
+        related to how these products are produced, distributed and sold. You will store the information for the supply chain of each product
+        as well as the relationship between the consumer products and the supply chain in the {supply_chain} folder. Make sure it is a well formatted list of supply chain information.
         When you use the web_search method, sleep 10 seconds inbetween each call to avoid a timeout.
         """
         self.python_executor.static_tools.update({"open": open})

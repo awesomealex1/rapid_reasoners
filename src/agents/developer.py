@@ -47,7 +47,7 @@ class Developer(CodeAgent):
         You are the developer agent who is a professional data scientist.
         You will use only the trending labels stored in {data_location} to search the web for consumer products that relate to the trending labels in {data_location}.
         Download the comsumer product data you find, including the urls, create a folder called {consumer_data_folder} and store the consumer data in it.
-        You can use any tools you like, but you must store the consumer product data you find in a .txt file in the {consumer_data_folder} folder. Ensure the data is readable, i.e. do not put one character on each line.
+        You can use any tools you like, but you must store the consumer product data you find in a .txt file in {consumer_data_folder} folder. Ensure the data is readable, i.e. do not put one character on each line.
         When you use the web_search method, sleep 10 seconds inbetween each call to avoid a timeout.
         """
         self.python_executor.static_tools.update({"open": open})

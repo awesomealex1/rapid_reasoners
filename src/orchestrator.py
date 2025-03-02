@@ -4,6 +4,7 @@ from agents.reviewer import Reviewer
 #from agents.presenter import Presenter
 from agents.data_collector import DataCollector
 from agents.find_consumer_products import ProductDeveloper
+from agents.supply_chain import SupplyChain
 
 class Orchestrator:
     def __init__(self):
@@ -13,6 +14,7 @@ class Orchestrator:
         #self.presenter = Presenter()
         self.reviewer = Reviewer()
         self.product = ProductDeveloper()
+        self.supply_chain = SupplyChain()
 
     def orchestrate(self, input_data):
         plan = str(self.planner.execute(input_data))
@@ -21,14 +23,16 @@ class Orchestrator:
         consumer_products = str(self.product.execute(raw_consumer_data))
         #presentation = str(self.presenter.execute(consumer_products))
         review_result = str(self.reviewer.execute(consumer_products))
+        supply_chain = str(self.supply_chain.execute(review_result))
 
         iteration = 0
 
-        max_iterations = 10
+        max_iterations = 15
 
         while iteration < max_iterations:
             if "yes" in review_result:
-                return review_result
+                supply_chain = str(self.supply_chain.execute(review_result))
+                return supply_chain
             else:
                 print("Result invalid, re-executing the plan")
                 plan = str(self.planner.execute(input_data))

@@ -59,7 +59,7 @@ def tiktok_trending_hashtags(days: str) -> str:
     # Prepare actor input
     run_input = {
         "countryCode": "US",
-        "maxItems": 40,
+        "maxItems": 30,
         "period": days  # e.g., "7" for 7 days
     }
     
