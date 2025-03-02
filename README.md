@@ -25,7 +25,7 @@ The agents pass info in this order, iterating until the Reviewer approves a repo
 ## TikTok Tool
 We built a custom tool using the [TikTok Trending Hashtags Scraper](https://apify.com/lexis-solutions/tiktok-trending-hashtags-scraper) from Apify to fetch trending hashtags (e.g., `#slime`, 107M views) for the Data Collector Agent, enabling real-time trend analysis. This open-source tool can be used by any smolagents agent.
 
-## Example of what our agents have found
+## Example of what our agents have found
 Bhad Babie is trending on tiktok currently.
 
 From news articles our agents found out bhad babie is trending because of a feud with alabama barker.
