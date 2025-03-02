@@ -48,6 +48,7 @@ class ProductDeveloper(CodeAgent):
         You will take the data stored in {consumer_data_folder} and search the web to create a list of consumer products related to the data.
         The product should be individual branded products, not a category of products, for instance, "Nike Air Max" is an example of a product, "Sports shoes" is an example of a category.
         You will store this list in the {consumer_products_folder} folder. Make sure it is a well formatted list of consumer products.
+        When you use the web_search method, sleep 10 seconds inbetween each call to avoid a timeout.
         """
         self.python_executor.static_tools.update({"open": open})
     
