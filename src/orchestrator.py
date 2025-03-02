@@ -5,6 +5,7 @@ from agents.reviewer import Reviewer
 from agents.data_collector import DataCollector
 from agents.find_consumer_products import ProductDeveloper
 from agents.supply_chain import SupplyChain
+from agents.stock_agent import StockPicker
 
 class Orchestrator:
     def __init__(self):
@@ -15,15 +16,16 @@ class Orchestrator:
         self.reviewer = Reviewer()
         self.product = ProductDeveloper()
         self.supply_chain = SupplyChain()
+        self.stocks = StockPicker()
 
     def orchestrate(self, input_data):
         plan = str(self.planner.execute(input_data))
         tik_tok_labels = str(self.data_collector.execute(plan))
         raw_consumer_data = str(self.developer.execute(tik_tok_labels))
         consumer_products = str(self.product.execute(raw_consumer_data))
-        #presentation = str(self.presenter.execute(consumer_products))
-        review_result = str(self.reviewer.execute(consumer_products))
-        supply_chain = str(self.supply_chain.execute(review_result))
+        supply_chain = str(self.supply_chain.execute(consumer_products))
+        stocks = str(self.stocks.execute(supply_chain))
+        review = str(self.reviewer.execute(stocks))
 
         iteration = 0
 
